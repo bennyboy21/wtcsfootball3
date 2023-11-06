@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+    <script src="script.js" defer></script>
+    <title>WTCS Football</title>
+</head>
+
+<style>
+    /* @import url('https://fonts.cdnfonts.com/css/horizon-2'); */
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+    * {
+        font-family: 'Kanit', sans-serif;
+    }
+
+    :root {    
+        --height-Amount:65px;
+    }
+
+    #img-Container {
+        width:100vw;
+        height:calc(100vh - 50px);
+        max-height: 750px;
+        position:absolute;
+        top:0px;
+        left:0px;
+        overflow: hidden;
+    }
+
+    #main-Img {
+        width:calc(100vw + 10px);
+        height:100%;
+        object-fit: cover;
+        object-position: center;
+        margin-top: -25px;
+        /* filter:brightness(65%); */
+        filter:brightness(65%) saturate(0%);
+        margin-left: -5px;
+        
+        background-image: url('Media/Main.png');
+        background-position: center;
+        background-repeat: none;
+        background-size: cover;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .top-Cover {
+        width:100vw;
+        height:20vh;
+        max-height: 75px;
+        background:linear-gradient(to bottom, rgb(5, 5, 5) 0%, rgb(5, 5, 5, 0.9) 25%, rgb(5, 5, 5, 0.6) 50%, rgb(5, 5, 5, 0.3) 75%, transparent);
+        position:absolute;
+        top: 0px;
+    }
+
+    .top-Cover-2 {
+        width:100vw;
+        height:35vh;
+        max-height: 150px;
+        background:linear-gradient(to bottom, rgb(5, 5, 5) 0%, transparent);
+        position:absolute;
+        top: 0px;
+    }
+
+    .top-Cover-3 {
+        width:100vw;
+        height:35vh;
+        max-height: 150px;
+        background:linear-gradient(to bottom, rgb(5, 5, 5) 0%, transparent);
+        position:absolute;
+        top: 0px;
+    }
+
+    .bottom-Cover {
+        width:100vw;
+        height:20vh;
+        max-height: 75px;
+        background:linear-gradient(to top, rgb(5, 5, 5) 0%, rgb(5, 5, 5, 0.9) 25%, rgb(5, 5, 5, 0.6) 50%, rgb(5, 5, 5, 0.3) 75%, transparent);
+        position:absolute;
+        bottom: 0px;
+    }
+
+    .bottom-Cover-2 {
+        width:100vw;
+        height:35vh;
+        max-height: 150px;
+        background:linear-gradient(to top, rgb(5, 5, 5) 0%, transparent);
+        position:absolute;
+        bottom: 0px;
+    }
+
+    .bottom-Cover-3 {
+        width:100vw;
+        height:35vh;
+        max-height: 150px;
+        background:linear-gradient(to top, rgb(5, 5, 5) 0%, transparent);
+        position:absolute;
+        bottom: 0px;
+    }
+
+    @media (min-width:500px) {
+        body {
+            display: none;
+        }
+
+        #top-Bar {
+            width:100vw;
+            height:75px;
+            background:transparent;
+            position:fixed;
+            top:0px;
+            z-index: 10; 
+        }
+
+        #logo-Img {
+            width:60px;
+            height:60px;
+            z-index: 10;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+
+        #second-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top: 750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            gap: 50px;
+        }
+
+        #third-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:800px;
+            transform:translate(-50%);
+            overflow: hidden;
+            display:grid;
+            grid-template-columns: auto auto;
+            /* gap: 50px; */
+        }
+        
+        .video-Container {
+            margin-top: 50px;
+            width:400px;
+            height:600px;
+            position:relative;
+            /* border-radius: 15px; */
+            overflow: hidden;
+            background:rgb(30, 30, 30);
+            margin-bottom:70px;
+            box-shadow: 1px solid rgb(0, 0, 0, 0.25);
+            /* border: 1px solid rgb(170, 170, 170); */
+        }
+
+        .text-Container {
+            width:calc(100% - 400px);
+            color:white;
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            position:relative;
+            /* left:-50px; */
+        }
+
+        .section-Title {
+            line-height: 80px;
+            margin-bottom: 15px;
+            width:100%;
+            font-size: 80px;
+            font-weight: 600;
+            color:white;
+            text-align:left;
+            /* position:absolute;
+            background:transparent;
+            top:-200px;
+            left:50%;
+            transform:translate(-50%); */
+        }
+
+        .section-Description {
+            width:100%;
+            font-size: 20px;
+            font-weight: 400;
+            color:white;
+        }
+
+        .insta-Info-Container {
+            width:100%;
+            height:75px;
+            position:absolute;
+            top:0px;
+            z-index: 10;
+        }
+
+        .profile-Picture-Contianer {
+            width:45px;
+            height:45px;
+            border-radius: 100%;
+            overflow: hidden;
+            position:relative;
+            left:15px;
+            top:50%;
+            transform:translate(0, -50%);
+        }
+
+        .profile-Picture {
+            width:100%;
+            height:100%;
+            scale:1;
+        }
+
+        .insta-Handle {
+            width:calc(100% - 225px);
+            color:white;
+            font-size: 18px;
+            font-weight: 400;
+            position:absolute;
+            top:50%;
+            left:70px;
+            transform:translate(0, -50%);
+        }
+
+        .view-Insta-Page {
+            font-size: 15px;
+            font-weight: 400;
+            border: 2px solid white;
+            color:white;
+
+            width:100px;
+            text-align: center;
+            padding:7px 10px;
+            border-radius: 25px;
+            position:absolute;
+            right:25px;
+            top:50%;
+            transform:translate(0, -50%);
+        }
+
+        .view-Insta-Page:hover {
+            cursor: pointer;
+        }
+
+        .watch-Again {
+            width:100%;
+            height:100%;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            position:absolute;
+            top:0px;
+            left:0px;
+            z-index:0;
+            opacity:0;
+        }
+        
+        .watch-Again:hover {
+            cursor: pointer;
+        }
+
+        .watch-Again-Text {
+            width:100px;
+            height:25px;
+            padding:10px 15px;
+            text-align: center;
+            border-radius: 20px;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+        }
+
+        .mute-Unmute-Button {
+            width:45px;
+            height:45px;
+            border-radius: 100%;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+            position:absolute;
+            bottom:25px;
+            right:25px;
+            z-index: 10;
+            display:flex;
+            justify-content:center;
+            align-items: center;
+        }
+
+        .mute-Unmute-Button:hover {
+            cursor: pointer;
+        }
+
+        .mute-Buttons {
+            width:20px;
+            height:20px;
+            fill:white;
+        }
+
+        #mute {
+            display:none;
+        }
+
+        #football-Name {
+            width:calc(100vw - 50px);
+            font-size: 65px;
+            color:white;
+            position:absolute;
+            top:50%;
+            left:50%;
+            text-align:center;
+            line-height: 65px;
+            font-weight: 800;
+            transform:translate(-50%, -50%);
+            text-shadow: 0px 0px 25px rgba(0, 0, 0, 0.75);
+        }
+
+        .coach-Img-Container {
+            width:calc(50vw - 25px);
+            max-width:600px;
+            height:fit-content;
+            /* max-height: 500px; */
+            height: 600px;
+            position:relative;
+            overflow: hidden;
+            /* left:-25px; */
+            /* margin-top: 500px; */
+        }
+
+        .coach-Img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            object-position: center;
+        }
+    }
+
+    @media (max-width:500px) {
+        body {
+            margin:0px;
+            background:rgb(5, 5, 5);
+            height:fit-content;
+            user-select: none;
+            -webkit-user-select: none;
+            opacity: 0;
+        }
+
+        #notification-Container {
+            width:100vw;
+            height:var(--height-Amount);
+            background:rgb(5, 5, 5);
+            z-index: 15;
+            position:fixed;
+            top:0px;
+            margin-top:calc(var(--height-Amount) * -1);
+            margin-top: 0px;
+        }
+
+        #notification-Text-Container {
+            width:100vw;
+            height:fit-content;
+            position:absolute;
+            top:50%;
+            left:25px;
+            transform:translate(0, -50%);
+        }
+
+        #notification-Header {
+            width:calc(100% - 100px);
+            height:fit-content;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color:white;
+            font-size: 22.5px;
+            font-weight: 800;
+            line-height: 22.5px;
+        }
+
+        #view-More-Notification {
+            font-size: 14px;
+            font-weight: 600;
+            color:rgb(150, 150, 150);
+        }
+
+        #close-Notification-Icon {
+            width:30px;
+            height:30px;
+            position:absolute;
+            top:50%;
+            right:15px;
+            fill:white;
+            transform:translate(0, -50%);
+        }
+
+        #top-Bar {
+            width:100vw;
+            height:75px;
+            background:transparent;
+            position:fixed;
+            top:var(--height-Amount);
+            z-index: 10; 
+        }
+
+        #logo-Img {
+            width:60px;
+            height:60px;
+            z-index: 10;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+        
+        .video-Container {
+            width:100vw;
+            height:fit-content;
+            position:relative;
+            background:rgb(30, 30, 30);
+        }
+
+        #second-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top: 750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column-reverse;
+            gap: 50px;
+        }
+
+        #third-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            margin-bottom: 30px;
+        }
+
+        #fourth-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            margin-bottom: 30px;
+        }
+
+        #fifth-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            margin-top: -10px;
+            margin-bottom: 30px;
+        }
+
+        #sixth-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            padding-bottom:75px;
+        }
+
+        #live-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            margin-top: 40px;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            margin-bottom: 50px;
+        }
+
+        #real-Live-Section {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            margin-top: -20px;
+            max-width: 1200px;
+            position:relative;
+            left:50%;
+            top:750px;
+            transform:translate(-50%);
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            grid-template-columns: auto;
+            gap: 0px;
+            margin-bottom: 50px;
+        }
+
+        .our-Final-Score-Container {
+            width:55px;
+            height:45px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            left:22.5px;
+            bottom:25px;
+            background:transparent;
+            overflow: hidden;
+        }
+
+        .their-Final-Score-Container {
+            width:55px;
+            height:45px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            right:22.5px;
+            bottom:25px;
+            background:transparent;
+            overflow: hidden;
+        }
+
+        .our-Final-Score-1 {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            top:0px;
+        }
+
+        .their-Final-Score-1 {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            top:0px;
+        }
+
+        .our-Final-Score-2 {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            top:50px;
+        }
+
+        .their-Final-Score-2 {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            top:50px;
+        }
+
+        .text-Container {
+            margin-top: 10px;
+            margin-bottom: 50px;
+            width:calc(100vw - 50px);
+            z-index:15;
+            color:white;
+            display:flex;
+            justify-self: center;
+            align-items:center;
+            flex-direction: column;
+            position:relative;
+            text-align:center;
+        }
+
+        .section-Title {
+            margin-bottom: 15px;
+            line-height: 45px;
+            width:100%;
+            font-size: 45px;
+            font-weight: 600;
+            color:white;
+            /* position:absolute;
+            background:transparent;
+            top:-200px;
+            left:50%;
+            transform:translate(-50%); */
+        }
+
+        .section-Description {
+            width:100%;
+            font-size: 17px;
+            font-weight: 400;
+            color:white;
+        }
+
+        .insta-Info-Container {
+            width:100vw;
+            height:75px;
+            position:absolute;
+            top:-60px;
+            z-index: 10;
+        }
+
+        .profile-Picture-Contianer {
+            width:46px;
+            height:46px;
+            border-radius: 100%;
+            overflow: hidden;
+            position:relative;
+            left:15px;
+            top:50%;
+            transform:translate(0, -50%);
+        }
+
+        .profile-Picture {
+            width:100%;
+            height:100%;
+            scale:1;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+
+        .insta-Handle {
+            width:calc(100% - 225px);
+            color:white;
+            font-size: 18px;
+            font-weight: 700;
+            position:absolute;
+            top:50%;
+            left:70px;
+            transform:translate(0, -50%);
+        }
+
+        .view-Insta-Page {
+            font-size: 15px;
+            font-weight: 700;
+            border: 2px solid white;
+            color:white;
+
+            width:100px;
+            text-align: center;
+            padding:7px 10px;
+            border-radius: 25px;
+            position:absolute;
+            right:25px;
+            top:50%;
+            transform:translate(0, -50%);
+        }
+
+        .watch-Again {
+            width:100vw;
+            height:100%;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:white;
+            position:absolute;
+            top:2px;
+            left:0px;
+            z-index:10;
+            opacity:0;
+        }
+
+        .watch-Again-Text {
+            width:100px;
+            height:25px;
+            padding:10px 15px;
+            text-align: center;
+            border-radius: 20px;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+            font-weight: 500;
+        }
+
+        .mute-Unmute-Button {
+            width:45px;
+            height:45px;
+            border-radius: 100%;
+            background:rgb(5, 5, 5, 0.3);
+            backdrop-filter:blur(.5rem);
+            -webkit-backdrop-filter: blur(.5rem);
+            position:absolute;
+            bottom:75px;
+            right:25px;
+            z-index: 15;
+            display:flex;
+            justify-content:center;
+            align-items: center;
+        }
+
+        .mute-Buttons {
+            width:20px;
+            height:20px;
+            fill:white;
+        }
+
+        #mute {
+            display:none;
+        }
+
+        #football-Name {
+            width:calc(100vw - 50px);
+            font-size: 50px;
+            color:white;
+            position:absolute;
+            top:50%;
+            left:50%;
+            text-align:center;
+            line-height: 65px;
+            font-weight: 800;
+            transform:translate(-50%, -50%);
+            text-shadow: 0px 0px 25px rgb(0, 0, 0);
+        }
+
+        #coaches-Container {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            position:relative;
+            background:rgb(255, 255, 255, 0.02);
+            backdrop-filter: blur(1rem);
+            -webkit-backdrop-filter: blur(1rem);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: -20px;
+            z-index: 10;
+            box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .coach-Container {
+            width:100%;
+            height:75px;
+            position:relative;
+        }
+
+        .coach-Img-Container {
+            width:50px;
+            height:50px;
+            position: absolute;
+            top:50%;
+            left:15px;
+            border-radius: 100%;
+            overflow: hidden;
+            transform:translate(0, -50%);
+        }
+
+        .coach-Img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .coach-Text {
+            width:calc(100% - 80px);
+            position:absolute;
+            top:50%;
+            left:75px;
+            transform:translate(0, -50%);
+        }
+
+        .coach-Name {
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 23px;
+            line-height:23px;
+            color:white;
+            font-weight:600;
+        }
+
+        .coach-Title {
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 15px;
+            line-height:20px;
+            color:rgb(150, 150, 150);
+            font-weight:600;
+        }
+
+        #captians-Container {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            position:relative;
+            background:rgb(255, 255, 255, 0.02);
+            backdrop-filter: blur(1rem);
+            -webkit-backdrop-filter: blur(1rem);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: -20px;
+            z-index: 10;
+            box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .captian-Container {
+            width:100%;
+            height:75px;
+            position:relative;
+        }
+
+        .captian-Img-Container {
+            width:50px;
+            height:50px;
+            position: absolute;
+            top:50%;
+            left:15px;
+            border-radius: 100%;
+            overflow: hidden;
+            transform:translate(0, -50%);
+        }
+
+        .captian-Img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .captian-Text {
+            width:calc(100% - 80px);
+            position:absolute;
+            top:50%;
+            left:75px;
+            transform:translate(0, -50%);
+        }
+
+        .captian-Name {
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 23px;
+            line-height:23px;
+            color:white;
+            font-weight:600;
+        }
+
+        .captian-Title {
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 15px;
+            line-height:20px;
+            color:rgb(150, 150, 150);
+            font-weight:600;
+        }
+
+        #past-Games-Container {
+            width:calc(100vw - 50px);
+            height:fit-content;
+            position:relative;
+            background:rgb(255, 255, 255, 0.02);
+            backdrop-filter: blur(1rem);
+            -webkit-backdrop-filter: blur(1rem);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: -20px;
+            z-index: 10;
+            box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .past-Game-Post-Container {
+            width:100%;
+            height:180px;
+            position:relative;
+        }
+
+        .past-Game-Date {
+            position:absolute;
+            top:15px;
+            left:50%;
+            transform:translate(-50%);
+            font-weight: 700;
+            color:rgb(150, 150, 150);
+        }
+
+        .past-Game-Our-Profile-Container {
+            width:50px;
+            height:50px;
+            position:relative;
+            overflow:hidden;
+            background:transparent;
+            position:absolute;
+            top:50px;
+            left:25px;
+            border-radius: 100%;
+        }
+
+        .past-Game-Their-Profile-Container {
+            width:50px;
+            height:50px;
+            position:relative;
+            overflow:hidden;
+            background:transparent;
+            position:absolute;
+            top:50px;
+            right:25px;
+            border-radius: 100%;
+        }
+
+        .past-Game-Img {
+            width:100%;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .vs-Text {
+            font-size: 25px;
+            color:white;
+            font-weight: 900;
+            font-style: italic;
+            position:absolute;
+            top:55px;
+            left:50%;
+            transform:translate(-50%);
+        }
+
+        .final-Text {
+            position:absolute;
+            bottom:35px;
+            left:50%;
+            transform:translate(-50%);
+            font-weight: 700;
+            color:rgb(150, 150, 150);
+        }
+
+        .our-Final-Score {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            left:25px;
+            bottom:25px;
+        }
+
+        .their-Final-Score {
+            width:50px;
+            font-size: 30px;
+            color:white;
+            position:absolute;
+            text-align:center;
+            font-weight: 800;
+            position:absolute;
+            right:25px;
+            bottom:25px;
+        }
+
+        .line-Break {
+            width:calc(100% - 30px);
+            height:2px;
+            background:rgb(255, 255, 255, 0.05);
+            border-radius: 15px;
+            position:relative;
+            left:50%;
+            transform:translate(-50%);
+        }
+        
+        .line-Game-Break {
+            width:calc(100% - 30px);
+            height:2px;
+            background:rgb(255, 255, 255, 0.05);
+            border-radius: 15px;
+            position:absolute;
+            left:50%;
+            transform:translate(-50%);
+            opacity: 1;
+            margin-top: -2px;
+        }
+
+        #social-Icon-Contianer {
+            margin-top: -25px;
+            width:200px;
+            display:flex;
+            justify-content: space-evenly;
+        }
+
+        .background-Incon-Socials-Container {
+            width:45px;
+            height:45px;
+            border-radius: 100%;
+            background:white;
+            border:2px solid black;
+            /* overflow: hidden; */
+        }
+
+        .social-Icon {
+            width:100%;
+            height:100%;
+            fill:rgb(15, 15, 15);
+            border-radius: 100%;
+            scale: 1.15;
+        }
+
+        #loading-Container {
+            width:100vw;
+            height:100vh;
+            position:fixed;
+            top:0px;
+            left:0px;
+            background:radial-gradient(rgb(5, 5, 5, 1) 100%, transparent 0%);
+            z-index:100;
+            opacity:1;
+            transition: .5s;
+        }
+
+        .red-Flash {
+            width:fit-content;
+            height:fit-content;
+            border-radius: 15px;
+            padding:5px 15px;
+            position:absolute;
+            top:-2px;
+            right:25px;
+            font-weight: 800;
+            background:rgb(214, 31, 31);
+            color:white;
+            z-index:15;
+        }
+
+        .quarter-1 {
+            width:fit-content;
+            text-align:left;
+            font-size: 25px;
+            color:rgb(150, 150, 150);
+            font-weight: 800;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+
+        .quarter-2 {
+            width:fit-content;
+            text-align:left;
+            font-size: 25px;
+            color:rgb(150, 150, 150);
+            font-weight: 800;
+            position:absolute;
+            margin-top: 50px;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+        }
+
+        #quarter-Container {
+            width:50px;
+            height:50px;
+            text-align:left;
+            font-size: 25px;
+            color:rgb(150, 150, 150);
+            font-weight: 800;
+            position:relative;
+            background:transparent;
+            top:15px;
+            left:20px;
+            overflow:hidden;
+        }
+
+        #quarter-Container::before {
+            content: "";
+            background:rgb(32, 127, 18);
+            width:0%;
+            height:3px;
+            border-radius: 15px;
+            position:absolute;
+            bottom:2px;
+            left:0px;
+            animation:liveAnimation 4s infinite;
+        }
+
+        @keyframes liveAnimation {
+            0% {
+                width:0%;
+                left:0px;
+                right:100%;
+            }
+
+            20% {
+                width:100%;
+                left:0px;
+                right:0%;
+            }
+
+            30% {
+                width:0%;
+                right:0px;
+                left:100%;
+            }
+
+            50% {
+                width:100%;
+                right:0px;
+                left:0px;
+            }
+
+            70% {            
+                width:0%;
+                right:100%;
+                left:0px;
+            }
+
+            100% {
+                width:0%;
+                right:100%;
+                left:0px;
+            }
+        }
+
+        .see-More-Button {
+            width:100%;
+            height:60px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size: 20px;
+            font-weight: 700;
+            color:rgb(150, 150, 150);
+        }
+    }
+
+    a {
+        color:rgb(32, 127, 18);
+        font-style: italic;
+    }
+
+    .videoPlayer {
+        width:100%;
+        object-position: center;
+        object-fit: cover;
+        background:transparent;
+        border:none;
+        overflow: hidden;
+        opacity: 0.99;
+        /* filter:saturate(0%); */
+    }
+
+    ::-webkit-scrollbar {
+        width:0px;
+        height:0px;
+    }
+</style>
+
+<body onload="loadBody()">
+    <div id="top-Bar">
+        <div id="notification-Container">
+            <div id="notification-Text-Container">
+                <div id="notification-Header">Game Tickets</div>
+                <div id="view-More-Notification">To Buy Tickets Go To Room 151.</div>
+            </div>
+
+            <svg id="close-Notification-Icon" onclick="closeNotification()" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="m256-168-88-88 224-224-224-224 88-88 224 224 224-224 88 88-224 224 224 224-88 88-224-224-224 224Z"/>
+            </svg>
+        </div>
+        <img src="Media/Logo.png" id="logo-Img">
+        
+        <div class="top-Cover"></div>
+        <div class="top-Cover-2"></div>
+        <div class="top-Cover-3"></div>
+    </div>
+    <div id="img-Container">
+        <!-- <img src="Media/Main.PNG" id="main-Img"> -->
+        <img id="main-Img">
+        <div class="overlay"></div>
+        <div class="bottom-Cover"></div>
+        <div class="bottom-Cover-2"></div>
+        <div class="bottom-Cover-3"></div>
+        <div id="football-Name">Western Tech Colts</div>
+    </div>
+
+    <div id="real-Live-Section">
+        
+        <div class="text-Container">        
+            <div class="section-Title" style="font-size:55px;line-height:55px;">Live Game</div>
+            <div class="section-Description"></div>
+        </div>
+    </div>
+    
+    <div id="loading-Container"></div>
+    
+    <div id="second-Section">
+        <div class="video-Container" onclick="muteUnmute()">
+            <div class="insta-Info-Container">
+                <div class="profile-Picture-Contianer">
+                    <img class="profile-Picture" src="Media/insta_Profile_Pictur.jpg">
+                </div>
+                <div class="insta-Handle">wtcsfootball</div>
+                <div class="view-Insta-Page" onclick="var video=document.querySelector('.videoPlayer');if(!video.muted) {muteUnmute()};window.open('https://www.instagram.com/wtcsfootball/');">View Page</div>
+            </div>
+            
+            <video class="videoPlayer" preload="auto" src="Media/video.mp4" style="display: block;" muted autoplay></video>
+            
+            <div class="mute-Unmute-Button">
+                <svg id="un-Mute" class="mute-Buttons" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                    <path d="M792-56 671-177q-25 16-53 27.5T560-131v-82q14-5 27.5-10t25.5-12L480-368v208L280-360H120v-240h128L56-792l56-56 736 736-56 56Zm-8-232-58-58q17-31 25.5-65t8.5-70q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 53-14.5 102T784-288ZM650-422l-90-90v-130q47 22 73.5 66t26.5 96q0 15-2.5 29.5T650-422ZM480-592 376-696l104-104v208Zm-80 238v-94l-72-72H200v80h114l86 86Zm-36-130Z"/>
+                </svg>
+    
+                <svg id="mute" class="mute-Buttons" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                    <path d="M560-131v-82q90-26 145-100t55-168q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm440 40v-322q47 22 73.5 66t26.5 96q0 51-26.5 94.5T560-320ZM400-606l-86 86H200v80h114l86 86v-252ZM300-480Z"/>
+                </svg>
+            </div>
+            <div class="watch-Again" onclick="restartVideo();var video=document.querySelector('.videoPlayer');if(!video.muted) {muteUnmute()}">
+                <div class="watch-Again-Text">Watch again</div>
+            </div>
+            <div class="top-Cover"></div>
+            <div class="top-Cover-2"></div>
+            <div class="top-Cover-3"></div>
+            <div class="bottom-Cover"></div>
+            <div class="bottom-Cover-2"></div>
+            <div class="bottom-Cover-3"></div>
+        </div>
+        <div class="text-Container">        
+            <div class="section-Title" style="font-size:55px;line-height:55px;">Who Are We</div>
+            <div class="section-Description">We are the WTCS (<a href="https://en.wikipedia.org/wiki/Western_Technical-Commercial_School">Western Technical-Commercial School</a>) Colts Football Team. A Tier 1 team in the TDSB (<a href="https://en.wikipedia.org/wiki/Toronto_District_School_Board">Toronto District School Board</a>). Our team is a diverse group of players from all over the GTA (<a href="https://en.wikipedia.org/wiki/Greater_Toronto_Area">Greater Toronto Area</a>). We have had a team in the past, but with the passing of <a href="https://www.thestar.com/news/gta/western-tech-students-remember-peter-cram-beloved-teacher-and-football-coach/article_a33da52d-af7b-5327-bb97-a63496661139.html#:~:text=High%20school%20football%20coach%20Peter,to%20get%20over%20the%20loss.">Peter Cram</a> in 2012 the football team fell apart until in 2021 fall season where Russell Hoff the current head coach with the help of Stephen Espi worked hard to rebuild the team and played as a Varsity team during the 21-22 season.</div>
+        </div>
+    </div>
+
+    <div id="third-Section">
+        
+        <div class="text-Container">        
+            <div class="section-Title">Coaches</div>
+            <div class="section-Description"></div>
+        </div>
+        <div id="coaches-Container">
+            
+            <div class="coach-Container">
+                <div class="coach-Img-Container">
+                    <img class="coach-Img" src="Media/insta_Profile_Pictur.jpg">
+                </div>
+                <div class="coach-Text">
+                    <div class="coach-Name">Russell Hoff</div>
+                    <div class="coach-Title">Sr. Offensive Head Coach</div>
+                </div>
+            </div>
+            <div class="line-Break"></div>
+
+            <div class="coach-Container">
+                <div class="coach-Img-Container">
+                    <img class="coach-Img" src="Media/insta_Profile_Pictur.jpg">
+                </div>
+                <div class="coach-Text">
+                    <div class="coach-Name">Stephen Espi</div>
+                    <div class="coach-Title">Sr. Defensive Head Coach</div>
+                </div>
+            </div>
+
+            <!-- <div class="coach-Container">
+                <div class="coach-Img-Container">
+                    <img class="coach-Img" src="Media/insta_Profile_Pictur.jpg">
+                </div>
+                <div class="coach-Text">
+                    <div class="coach-Name">Russell Hoff</div>
+                    <div class="coach-Title">Offensive Coach</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <div id="fourth-Section">
+        
+        <div class="text-Container">        
+            <div class="section-Title">Captians</div>
+            <div class="section-Description"></div>
+        </div>
+        <div id="captians-Container">
+            
+            <div class="captian-Container">
+                <div class="captian-Img-Container">
+                    <img class="captian-Img" src="Media/JohnB.jpeg">
+                </div>
+                <div class="captian-Text">
+                    <div class="captian-Name">John Bratkowski (#5)</div>
+                    <div class="captian-Title">RB (#5)</div>
+                </div>
+            </div>
+
+            <div class="line-Break"></div>
+
+            <div class="captian-Container">
+                <div class="captian-Img-Container">
+                    <img class="captian-Img" src="Media/JacksonG.jpeg">
+                </div>
+                <div class="captian-Text">
+                    <div class="captian-Name">Jackson Galanyk (#12)</div>
+                    <div class="captian-Title">QB (#12)</div>
+                </div>
+            </div>
+            
+            <div class="line-Break"></div>
+
+            <div class="captian-Container">
+                <div class="captian-Img-Container">
+                    <img class="captian-Img" src="Media/OliverW.JPG">
+                </div>
+                <div class="captian-Text">
+                    <div class="captian-Name">Oliver Willer (#15)</div>
+                    <div class="captian-Title">HB (#15)</div>
+                </div>
+            </div>
+
+            <div class="line-Break"></div>
+
+            <div class="captian-Container">
+                <div class="captian-Img-Container">
+                    <img class="captian-Img" src="Media/KaiG.jpeg">
+                </div>
+                <div class="captian-Text">
+                    <div class="captian-Name">Kai Gagnon (#20)</div>
+                    <div class="captian-Title">LB (#20)</div>
+                </div>
+            </div>
+
+            <div class="line-Break"></div>
+
+            <div class="captian-Container">
+                <div class="captian-Img-Container">
+                    <img class="captian-Img" src="Media/PaulC.jpeg">
+                </div>
+                <div class="captian-Text">
+                    <div class="captian-Name">Paul Carter (#99)</div>
+                    <div class="captian-Title">DE (#99)</div>
+                </div>
+            </div>
+
+            <!-- <div class="coach-Container">
+                <div class="coach-Img-Container">
+                    <img class="coach-Img" src="Media/insta_Profile_Pictur.jpg">
+                </div>
+                <div class="coach-Text">
+                    <div class="coach-Name">Russell Hoff</div>
+                    <div class="coach-Title">Offensive Coach</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <div id="live-Section">
+        <div class="text-Container">        
+            <div class="section-Title">Next Game</div>
+            <div class="section-Description"></div>
+        </div>
+        <!-- <div class="past-Game-Post-Container" style="background:rgb(255, 255, 255, 0.02);backdrop-filter: blur(1rem);-webkit-backdrop-filter: blur(1rem); border-radius: 15px;position:relative;height:200px;margin-top: -25px;">
+            <div class="red-Flash" style="display:none;">Live</div>
+            <div class="quarter">Nov 10th at 12:30</div>
+            <input type="time">
+            <div class="past-Game-Our-Profile-Container" style="top:75px;">
+                <img class="past-Game-Img" src="Media/Logo.png">
+            </div>
+            <div class="past-Game-Their-Profile-Container" style="top:75px;">
+                <img class="past-Game-Img" src="Media/Richview.png">
+            </div>
+            <div class="vs-Text" style="top:80px;">VS</div>
+            <div class="final-Text">-</div>
+            <div class="our-Final-Score">-</div>
+            <div class="their-Final-Score">-</div>
+        </div> -->
+    </div>
+
+    <div id="fifth-Section">
+        <div class="text-Container">        
+            <div class="section-Title">Past Games</div>
+            <div class="section-Description"></div>
+        </div>
+        <div id="past-Games-Container"></div>
+    </div>
+
+    <div id="sixth-Section">
+        <div class="text-Container">        
+            <div class="section-Title">Our Socials</div>
+            <div class="section-Description"></div>
+        </div>
+        <div id="social-Icon-Contianer">
+            <a class="background-Incon-Socials-Container" href="https://www.instagram.com/wtcsfootball/">
+                <svg class="social-Icon" xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" xmlns:xlink="http://www.w3.org/1999/xlink" height="100%" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" version="1.1" viewBox="0 0 512 512" width="100%" xml:space="preserve">
+                    <path d="M256,0c141.29,0 256,114.71 256,256c0,141.29 -114.71,256 -256,256c-141.29,0 -256,-114.71 -256,-256c0,-141.29 114.71,-256 256,-256Zm0,96c-43.453,0 -48.902,0.184 -65.968,0.963c-17.03,0.777 -28.661,3.482 -38.839,7.437c-10.521,4.089 -19.444,9.56 -28.339,18.455c-8.895,8.895 -14.366,17.818 -18.455,28.339c-3.955,10.177 -6.659,21.808 -7.437,38.838c-0.778,17.066 -0.962,22.515 -0.962,65.968c0,43.453 0.184,48.902 0.962,65.968c0.778,17.03 3.482,28.661 7.437,38.838c4.089,10.521 9.56,19.444 18.455,28.34c8.895,8.895 17.818,14.366 28.339,18.455c10.178,3.954 21.809,6.659 38.839,7.436c17.066,0.779 22.515,0.963 65.968,0.963c43.453,0 48.902,-0.184 65.968,-0.963c17.03,-0.777 28.661,-3.482 38.838,-7.436c10.521,-4.089 19.444,-9.56 28.34,-18.455c8.895,-8.896 14.366,-17.819 18.455,-28.34c3.954,-10.177 6.659,-21.808 7.436,-38.838c0.779,-17.066 0.963,-22.515 0.963,-65.968c0,-43.453 -0.184,-48.902 -0.963,-65.968c-0.777,-17.03 -3.482,-28.661 -7.436,-38.838c-4.089,-10.521 -9.56,-19.444 -18.455,-28.339c-8.896,-8.895 -17.819,-14.366 -28.34,-18.455c-10.177,-3.955 -21.808,-6.66 -38.838,-7.437c-17.066,-0.779 -22.515,-0.963 -65.968,-0.963Zm0,28.829c42.722,0 47.782,0.163 64.654,0.933c15.6,0.712 24.071,3.318 29.709,5.509c7.469,2.902 12.799,6.37 18.397,11.969c5.6,5.598 9.067,10.929 11.969,18.397c2.191,5.638 4.798,14.109 5.509,29.709c0.77,16.872 0.933,21.932 0.933,64.654c0,42.722 -0.163,47.782 -0.933,64.654c-0.711,15.6 -3.318,24.071 -5.509,29.709c-2.902,7.469 -6.369,12.799 -11.969,18.397c-5.598,5.6 -10.928,9.067 -18.397,11.969c-5.638,2.191 -14.109,4.798 -29.709,5.509c-16.869,0.77 -21.929,0.933 -64.654,0.933c-42.725,0 -47.784,-0.163 -64.654,-0.933c-15.6,-0.711 -24.071,-3.318 -29.709,-5.509c-7.469,-2.902 -12.799,-6.369 -18.398,-11.969c-5.599,-5.598 -9.066,-10.928 -11.968,-18.397c-2.191,-5.638 -4.798,-14.109 -5.51,-29.709c-0.77,-16.872 -0.932,-21.932 -0.932,-64.654c0,-42.722 0.162,-47.782 0.932,-64.654c0.712,-15.6 3.319,-24.071 5.51,-29.709c2.902,-7.468 6.369,-12.799 11.968,-18.397c5.599,-5.599 10.929,-9.067 18.398,-11.969c5.638,-2.191 14.109,-4.797 29.709,-5.509c16.872,-0.77 21.932,-0.933 64.654,-0.933Zm0,49.009c-45.377,0 -82.162,36.785 -82.162,82.162c0,45.377 36.785,82.162 82.162,82.162c45.377,0 82.162,-36.785 82.162,-82.162c0,-45.377 -36.785,-82.162 -82.162,-82.162Zm0,135.495c-29.455,0 -53.333,-23.878 -53.333,-53.333c0,-29.455 23.878,-53.333 53.333,-53.333c29.455,0 53.333,23.878 53.333,53.333c0,29.455 -23.878,53.333 -53.333,53.333Zm104.609,-138.741c0,10.604 -8.597,19.199 -19.201,19.199c-10.603,0 -19.199,-8.595 -19.199,-19.199c0,-10.604 8.596,-19.2 19.199,-19.2c10.604,0 19.201,8.596 19.201,19.2Z"/>
+                </svg>
+            </a>
+
+            <a class="background-Incon-Socials-Container" href="https://twitter.com/wtcsfootball">
+                <svg class="social-Icon" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512">
+                    <path d="M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z"/><path fill="#fff" fill-rule="nonzero" d="M318.64 157.549h33.401l-72.973 83.407 85.85 113.495h-67.222l-52.647-68.836-60.242 68.836h-33.423l78.052-89.212-82.354-107.69h68.924l47.59 62.917 55.044-62.917zm-11.724 176.908h18.51L205.95 176.493h-19.86l120.826 157.964z"/>
+                </svg>
+            </a>
+
+            <a class="background-Incon-Socials-Container" href="https://www.youtube.com/@westerntechcoltsfootball2973">
+                <svg class="social-Icon" xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" xmlns:xlink="http://www.w3.org/1999/xlink" height="100%" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" version="1.1" viewBox="0 0 512 512" width="100%" xml:space="preserve">
+                    <path d="M256,0c141.29,0 256,114.71 256,256c0,141.29 -114.71,256 -256,256c-141.29,0 -256,-114.71 -256,-256c0,-141.29 114.71,-256 256,-256Zm153.315,178.978c-3.68,-13.769 -14.522,-24.61 -28.29,-28.29c-24.958,-6.688 -125.025,-6.688 -125.025,-6.688c0,0 -100.067,0 -125.025,6.688c-13.765,3.68 -24.61,14.521 -28.29,28.29c-6.685,24.955 -6.685,77.024 -6.685,77.024c0,0 0,52.067 6.685,77.02c3.68,13.769 14.525,24.614 28.29,28.293c24.958,6.685 125.025,6.685 125.025,6.685c0,0 100.067,0 125.025,-6.685c13.768,-3.679 24.61,-14.524 28.29,-28.293c6.685,-24.953 6.685,-77.02 6.685,-77.02c0,0 0,-52.069 -6.685,-77.024Zm-185.316,125.025l0,-96.002l83.137,48.001l-83.137,48.001Z"/>
+                </svg>
+            </a>
+
+            <a class="background-Incon-Socials-Container" style="display:none;">
+                <svg class="social-Icon" xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" xmlns:xlink="http://www.w3.org/1999/xlink" height="100%" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" version="1.1" viewBox="0 0 512 512" width="100%" xml:space="preserve">
+                    <path d="M255.022,511.998l0.229,0.001l-0.079,0l-0.15,-0.001Zm1.806,0.001l-0.079,0l0.229,-0.001l-0.15,0.001Zm-2.588,-0.005l0.247,0.001l-0.142,0l-0.105,-0.001Zm3.415,0.001l-0.142,0l0.247,-0.001l-0.105,0.001Zm-4.169,-0.007l0.165,0.001l-0.132,-0.001l-0.033,0Zm4.995,0l-0.132,0.001l0.165,-0.001l-0.033,0Zm0.826,-0.009l-0.058,0.001l0.223,-0.003l-0.165,0.002Zm-6.779,-0.002l0.223,0.003l-0.058,-0.001l-0.165,-0.002Zm7.604,-0.01l-0.135,0.002l0.275,-0.004l-0.14,0.002Zm-8.404,-0.002l0.275,0.004l-0.135,-0.002l-0.14,-0.002Zm9.228,-0.012l-0.182,0.003l0.254,-0.005l-0.072,0.002Zm-9.984,-0.002l0.254,0.005l-0.182,-0.003l-0.072,-0.002Zm-0.937,-0.019l0.225,0.005l-0.04,-0.001l-0.185,-0.004Zm11.745,0.004l-0.04,0.001l0.225,-0.005l-0.185,0.004Zm-12.567,-0.025l0.309,0.008l-0.125,-0.003l-0.184,-0.005Zm13.39,0.005l-0.125,0.003l0.309,-0.008l-0.184,0.005Zm0.823,-0.022l-0.201,0.006l0.316,-0.009l-0.115,0.003Zm-14.967,-0.003l0.316,0.009l-0.201,-0.006l-0.115,-0.003Zm-0.72,-0.022l0.225,0.007l-0.212,-0.007l-0.194,-0.006l0.181,0.006Zm16.509,0l-0.212,0.007l0.225,-0.007l0.181,-0.006l-0.194,0.006Zm0.821,-0.027l-0.112,0.004l0.345,-0.012l-0.233,0.008Zm-18.371,-0.008l0.345,0.012l-0.112,-0.004l-0.233,-0.008Zm-0.749,-0.028l0.362,0.013l-0.201,-0.007l-0.161,-0.006Zm19.941,0.006l-0.201,0.007l0.362,-0.013l-0.161,0.006Zm-20.676,-0.036l0.354,0.015l-0.277,-0.011l-0.077,-0.004Zm21.495,0.004l-0.277,0.011l0.354,-0.015l-0.077,0.004Zm-22.525,-0.049l0.38,0.017l-0.093,-0.003l-0.287,-0.014Zm23.345,0.014l-0.093,0.003l0.38,-0.017l-0.287,0.014Zm-24.084,-0.048l0.394,0.018l-0.186,-0.008l-0.208,-0.01Zm24.902,0.01l-0.186,0.008l0.394,-0.018l-0.208,0.01Zm-25.63,-0.047l0.397,0.02l-0.279,-0.013l-0.118,-0.007Zm26.448,0.007l-0.279,0.013l0.397,-0.02l-0.118,0.007Zm0.818,-0.043l-0.362,0.019l0.321,-0.017l0.378,-0.021l-0.337,0.019Zm-27.925,0.002l0.321,0.017l-0.362,-0.019l-0.337,-0.019l0.378,0.021Zm28.741,-0.048l-0.16,0.009l0.406,-0.023l-0.246,0.014Zm-29.844,-0.014l0.406,0.023l-0.16,-0.009l-0.246,-0.014Zm-0.722,-0.043l0.405,0.024l-0.253,-0.014l-0.152,-0.01Zm31.382,0.01l-0.253,0.014l0.405,-0.024l-0.152,0.01Zm-32.071,-0.053l0.365,0.023l-0.34,-0.021l-0.342,-0.022l0.317,0.02Zm32.887,0.002l-0.34,0.021l0.365,-0.023l0.317,-0.02l-0.342,0.022Zm0.814,-0.053l-0.122,0.008l0.387,-0.026l-0.265,0.018Zm-34.755,-0.018l0.387,0.026l-0.122,-0.008l-0.265,-0.018Zm-0.721,-0.05l0.38,0.027l-0.208,-0.014l-0.172,-0.013Zm36.29,0.013l-0.208,0.014l0.38,-0.027l-0.172,0.013Zm-37.009,-0.064l0.349,0.025l-0.271,-0.019l-0.078,-0.006Zm37.822,0.006l-0.271,0.019l0.349,-0.025l-0.078,0.006Zm-38.789,-0.079l0.306,0.023l-0.074,-0.005l-0.232,-0.018Zm39.602,0.018l-0.074,0.005l0.306,-0.023l-0.232,0.018Zm0.811,-0.063l-0.146,0.011l0.311,-0.025l-0.165,0.014Zm-41.157,-0.014l0.311,0.025l-0.146,-0.011l-0.165,-0.014Zm-0.725,-0.059l0.264,0.022l-0.186,-0.015l-0.078,-0.007Zm42.694,0.007l-0.186,0.015l0.264,-0.022l-0.078,0.007Zm-43.492,-0.074l0.079,0.007l-0.013,-0.001l-0.066,-0.006Zm44.302,0.006l-0.013,0.001l0.079,-0.007l-0.066,0.006Zm0.81,-0.071l-0.072,0.006l0.181,-0.016l-0.109,0.01Zm-45.965,-0.01l0.181,0.016l-0.072,-0.006l-0.109,-0.01Zm-0.75,-0.068l0.135,0.013l-0.084,-0.008l-0.051,-0.005Zm47.523,0.005l-0.084,0.008l0.135,-0.013l-0.051,0.005Zm-63.736,-2.025c-122.319,-19.226 -216,-125.203 -216,-252.887c0,-141.29 114.71,-256 256,-256c141.29,0 256,114.71 256,256c0,127.684 -93.681,233.661 -216,252.887l0,-178.887l59.65,0l11.35,-74l-71,0l0,-48.021c0,-20.245 9.918,-39.979 41.719,-39.979l32.281,0l0,-63c0,0 -29.296,-5 -57.305,-5c-58.476,0 -96.695,35.44 -96.695,99.6l0,56.4l-65,0l0,74l65,0l0,178.887Z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- <iframe width="1159" height="662" src="https://www.youtube.com/embed/ozJalVCN0EE" title="SIDEMEN AMONG US BUT THE IMPOSTER CAN HIDE BODIES!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+
+    </iframe> -->
+
+    <script defer>
+        var video = document.querySelector('.videoPlayer');
+        video.volume = .1
+        video.playbackRate = 15
+
+        var options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5 // Change this threshold as needed
+        };
+
+        var observer = new IntersectionObserver(handleIntersection, options);
+
+        function handleIntersection(entries, observer) {
+            entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                video.play();
+            } else {
+                video.pause();
+            }
+            });
+        }
+
+        observer.observe(video);
+
+        video.addEventListener('ended', function() {
+            // This function will run when the video ends
+            document.querySelectorAll(".watch-Again")[0].style.zIndex = "10"
+            document.querySelectorAll(".watch-Again")[0].style.opacity = "0"
+            document.querySelectorAll(".watch-Again")[0].style.transition = ".5s"
+            document.querySelectorAll(".watch-Again")[0].style.opacity = "1"
+
+            setTimeout(function() {
+                document.querySelectorAll(".watch-Again")[0].style.transition = "0s"
+            }, 500)
+
+        });
+
+        function restartVideo() {
+            document.querySelectorAll(".watch-Again")[0].style.opacity = "1"
+            document.querySelectorAll(".watch-Again")[0].style.transition = ".5s"
+            document.querySelectorAll(".watch-Again")[0].style.opacity = "0"
+
+            setTimeout(function() {    
+                video.play()
+            }, 250)
+
+            setTimeout(function() {
+                document.querySelectorAll(".watch-Again")[0].style.transition = "0s"
+                document.querySelectorAll(".watch-Again")[0].style.zIndex = "-1"
+            }, 500)
+        }
+    </script>
+</html>
